@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Salt Analysis Lab 🧪</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --primary-accent: #38bdf8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        h1 { color: var(--primary-accent); margin-bottom: 0.5rem; }
+        p { opacity: 0.8; font-style: italic; }
+
+        .lab-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            max-width: 1000px;
+        }
+
+        /* Test Tube Styling */
+        .test-tube-section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 300px;
+        }
+
+        .tube-holder {
+            position: relative;
+            width: 60px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 3px solid #cbd5e1;
+            border-radius: 0 0 30px 30px;
+            margin: 20px auto;
+            overflow: hidden;
+            border-top: none;
+        }
+
+        .liquid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30%;
+            background-color: #f1f5f9; /* Initial color */
+            transition: all 0.8s ease;
+        }
+
+        .bubbles {
+            display: none;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 50px;
+            background-image: radial-gradient(circle, white 10%, transparent 20%);
+            background-size: 15px 15px;
+            animation: bubble-up 0.5s infinite;
+        }
+
+        @keyframes bubble-up {
+            from { bottom: 10px; opacity: 1; }
+            to { bottom: 60px; opacity: 0; }
+        }
+
+        select, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #334155;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover { background: var(--primary-accent); color: var(--bg-color); }
+
+        /* Flame Section */
+        .flame-section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .burner {
+            width: 40px;
+            height: 80px;
+            background: #64748b;
+            margin: 50px auto 0;
+            position: relative;
+        }
+
+        .flame {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-45deg);
+            width: 50px;
+            height: 50px;
+            background: #3b82f6; /* Default Blue Flame */
+            border-radius: 50% 0 50% 50%;
+            filter: blur(2px);
+            box-shadow: 0 0 20px #3b82f6;
+            transition: all 0.5s ease;
+        }
+
+        .info-box {
+            margin-top: 20px;
+            padding: 10px;
+            border-left: 4px solid var(--primary-accent);
+            background: rgba(56, 189, 248, 0.1);
+            font-size: 0.9rem;
+            text-align: left;
+            min-height: 60px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🧪 Salt Analysis Interactive Lab</h1>
+        <p>Chemestry ko "Ratna" chhodo, Visualise karo!</p>
+    </header>
+
+    <div class="lab-container">
+        <div class="test-tube-section">
+            <h3>Wet Test Simulator</h3>
+            <div class="tube-holder">
+                <div id="liquid" class="liquid"></div>
+                <div id="bubbles" class="bubbles"></div>
+            </div>
+            
+            <label>Select Salt (Radical):</label>
+            <select id="salt">
+                <option value="none">-- Select Salt --</option>
+                <option value="cu">Copper (Cu2+)</option>
+                <option value="fe">Iron (Fe3+)</option>
+                <option value="nh4">Ammonium (NH4+)</option>
+            </select>
+
+            <label>Add Reagent:</label>
+            <select id="reagent">
+                <option value="none">-- Select Reagent --</option>
+                <option value="nh4oh">NH4OH (Liquid)</option>
+                <option value="naoh">NaOH + Heat</option>
+                <option value="k4fe">K4[Fe(CN)6]</option>
+            </select>
+
+            <button onclick="runReaction()">Mix & Observe</button>
+            <div id="tube-info" class="info-box">Observation: Waiting for chemicals...</div>
+        </div>
+
+        <div class="flame-section">
+            <h3>Flame Test Simulator</h3>
+            <div class="burner">
+                <div id="flame" class="flame"></div>
+            </div>
+            <p>Dip wire in salt and put in flame:</p>
+            <button onclick="changeFlame('#dc2626', 'Strontium (Sr2+): Crimson Red Flame')">Strontium (Sr2+)</button>
+            <button onclick="changeFlame('#84cc16', 'Barium (Ba2+): Apple Green Flame')">Barium (Ba2+)</button>
+            <button onclick="changeFlame('#fbbf24', 'Calcium (Ca2+): Brick Red Flame')">Calcium (Ca2+)</button>
+            <button onclick="changeFlame('#3b82f6', 'Reset Bunsen Burner')">Reset Flame</button>
+            <div id="flame-info" class="info-box">Result: Heat the salt to see colors.</div>
+        </div>
+    </div>
+
+    <script>
+        function runReaction() {
+            const salt = document.getElementById('salt').value;
+            const reagent = document.getElementById('reagent').value;
+            const liquid = document.getElementById('liquid');
+            const info = document.getElementById('tube-info');
+            const bubbles = document.getElementById('bubbles');
+
+            bubbles.style.display = "none";
+            liquid.style.height = "60%";
+
+            // Logic for Reactions
+            if (salt === 'cu' && reagent === 'nh4oh') {
+                liquid.style.backgroundColor = "#1e3a8a"; // Deep Blue
+                info.innerText = "Reaction: Cu2+ + NH4OH (excess) → Deep Blue solution [Cu(NH3)4]2+";
+            } else if (salt === 'fe' && reagent === 'k4fe') {
+                liquid.style.backgroundColor = "#003153"; // Prussian Blue
+                info.innerText = "Reaction: Fe3+ + K4[Fe(CN)6] → Prussian Blue PPT formation.";
+            } else if (salt === 'nh4' && reagent === 'naoh') {
+                liquid.style.backgroundColor = "#f1f5f9";
+                bubbles.style.display = "block";
+                info.innerText = "Observation: Ammonia gas (NH3) evolved with pungent smell. Blue litmus turns red.";
+            } else {
+                liquid.style.backgroundColor = "#e2e8f0";
+                info.innerText = "Observation: No significant characteristic change. Try another combination!";
+            }
+        }
+
+        function changeFlame(color, text) {
+            const flame = document.getElementById('flame');
+            const info = document.getElementById('flame-info');
+            flame.style.backgroundColor = color;
+            flame.style.boxShadow = `0 0 30px ${color}`;
+            info.innerText = text;
+        }
+    </script>
+
+</body>
+</html>
